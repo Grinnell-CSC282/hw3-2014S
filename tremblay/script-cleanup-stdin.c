@@ -3,38 +3,13 @@
 #include <string.h>
 #include <limits.h>
 
+
+// Attempt at using STDIN, STDOUT
+//  DOESN'T WORK
 int 
 main (int argc, char *argv[]) {
-  // Exit if incorrect number of arguments
-  if (2 != argc) {
-    printf("Usage: %s filename\n", argv[0]);
-    return 1;
-  }
-
-  // Open the file
-  char *filename = argv[1];
-  FILE *file = fopen(filename, "r");
-
-  // Create an output filename
-  char *output_filename = malloc(strlen(filename) + strlen("clean-") + 1);
-  if (!output_filename) {
-    printf("Error allocating memory");
-    return 1;
-  }
-  output_filename[0] = '\0';
-  strcat(output_filename, "clean-");
-  strcat(output_filename, argv[1]);
-
-  // Open the output file
-  FILE *output = fopen(output_filename , "w");
-  // Exit if fopen returned null
-  if (!output) {
-    printf("Failed to open file %s\n", argv[1]);
-    return 1;
-  }
-  
   char buffer[LINE_MAX];
-  while (fgets(buffer, LINE_MAX, file)) {
+  while (gets(buffer)) {
     int i, j, start;
     // Remove the opening garbage (see note below)
     start = 0;
@@ -44,7 +19,7 @@ main (int argc, char *argv[]) {
 	start = cntrl_G_pointer - buffer + 1;
       } 
     }
-    
+        
     // Loop through the line and remove characters
     for (i = start, j = 0; '\0' != buffer[i]; i++) {
       switch (buffer[i]) {
@@ -61,12 +36,9 @@ main (int argc, char *argv[]) {
       }
     }
     buffer[j] = '\0';
-    fputs(buffer, output);
+    puts(buffer);
   }
 
-  // Close the files
-  fclose(file);
-  fclose(output);
   return 0; 
 }
 
